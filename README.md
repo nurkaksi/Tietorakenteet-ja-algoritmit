@@ -1,4 +1,6 @@
-# Git repo instructions
+HELLO GITLAB
+
+6# Git repo instructions
 
 In the following folder structure, you can see 
 - weekly exercises (wk*) and 
