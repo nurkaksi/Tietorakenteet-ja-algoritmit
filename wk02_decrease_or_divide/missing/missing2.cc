@@ -19,7 +19,7 @@ int searchSmallestMissing(int* A, int left, int right){
     }
     else {
        /// tarkastetaan onko keskikohta oikeassa paikassa
-       int mid = left + (left+right)/2;
+       int mid = (left+right)/2;
 
        /// jos keskikohta on väärässä paikassa, etsittävä arvo
        /// on vasemmassa puolikkaassa
