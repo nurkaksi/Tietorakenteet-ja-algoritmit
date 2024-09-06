@@ -3,8 +3,13 @@
 #include "test.hh"
 
 int searchSmallestMissingIteration(int* arr, int size){
-    //TODO: your code here
-    //return missing value OR
-    //return NO_VALUE_MISSING if no value is missing
+    int i = 0;
+    int j = arr[0];
+    for ( i ; i<size; ++i){
+        if (j != arr[i]){
+            return j;
+        }
+        j++;
+    }
     return NO_VALUE_MISSING;
 }
