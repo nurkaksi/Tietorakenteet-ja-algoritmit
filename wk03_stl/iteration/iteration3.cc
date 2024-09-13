@@ -14,5 +14,13 @@ using namespace std;
 
 void printHalf(const list<int>& lst)
 {
-    // ADD YOUR CODE HERE
+    list<int>::const_iterator left = lst.begin();
+    list<int>::const_iterator right = left;
+    size_t size = lst.size();
+    advance(right, size/2);
+
+    for (; left != right; ++left ) {
+        cout << *left << " ";
+    }
+    cout << endl;
 }
