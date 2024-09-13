@@ -15,7 +15,7 @@ using namespace std;
 void printEverySecond(const list<int>& lst)
 {
     list<int>::const_iterator i;
-    for (i = lst.begin();i != lst.end(); ++i) {
+    for (i = lst.begin();i != lst.end(); ) {
         cout << *i << " ";
         // hypätään kaksi kerrallaan käyttämällä valmista funktiota
         advance(i,2);
