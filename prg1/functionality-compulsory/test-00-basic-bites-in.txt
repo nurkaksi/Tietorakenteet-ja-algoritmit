@@ -17,6 +17,18 @@ get_bite_count
 all_bites
 get_bite_name 2
 get_bite_coord 2
+# Add with same ID, name and coordinates
+add_bite 2 "🦋" (18,13)
+get_bite_count
+all_bites
+# Add with same ID and name
+add_bite 2 "🦋" (18,3)
+get_bite_count
+all_bites
+# Add with same coordinates
+add_bite 5 "🦋" (18,13)
+get_bite_count
+all_bites
 add_bite 3 "🎁" (14,13)
 get_bite_count
 all_bites
