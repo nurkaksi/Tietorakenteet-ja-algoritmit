@@ -13,8 +13,19 @@ using namespace std;
  * @param v a vector to be sorted
  * @return int EXIT_SUCCESS if everything went OK, EXIT_FAILURE otherwise
  */
-int sortDesc(std::vector<int>& v)
+int sortDesc(vector<int>& v)
 {
-    return EXIT_FAILURE;
+
+    try {
+        sort(v.rbegin(), v.rend());
+
+        return EXIT_SUCCESS;
+    }
+
+    catch(const std::exception& e) {
+
+        return EXIT_FAILURE;
+    }
+
 }
 
