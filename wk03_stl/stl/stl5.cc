@@ -18,12 +18,17 @@ using namespace std;
 int sortMod3(std::vector<int>& v)
 {
     try {
-        auto dividedByThree = partition(v.begin(), v.end(), [] (int x) { return x % 3 == 0;});
-        auto reminderOne = partition(dividedByThree, v.end(), [] (int x) { return x % 3 == 1;});
+        auto divisibleBy3 = std::stable_partition(v.begin(), v.end(),
+            [](int x) { return x % 3 == 0; });
 
-        sort(v.begin(), dividedByThree);
-        sort(dividedByThree, reminderOne);
-        sort(reminderOne, v.end());
+        // Ne, joiden jakojäännös on 1
+        auto remainder1 = std::stable_partition(divisibleBy3, v.end(),
+            [](int x) { return x % 3 == 1; });
+
+        // Nyt järjestetään jokainen osa nousevaan järjestykseen
+        sort(v.begin(), divisibleBy3); // Jaolliset kolmella
+        sort(divisibleBy3, remainder1);  // Jakojäännös 1
+        sort(remainder1, v.end());     // Jakojäännös 2
 
         return EXIT_SUCCESS;
     }
