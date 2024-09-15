@@ -13,8 +13,18 @@ using namespace std;
  * @param v vector to be sorted
  * @return int EXIT_SUCCESS if everything went OK, EXIT_FAILURE otherwise
  */
-int sortAsc(std::vector<int>& v)
+int sortAsc(vector<int>& v)
 {
-    return EXIT_FAILURE;
-}
 
+    try {
+        sort(v.begin(), v.end());
+
+        return EXIT_SUCCESS;
+    }
+
+    catch(const exception& e) {
+
+        return EXIT_FAILURE;
+    }
+
+}
