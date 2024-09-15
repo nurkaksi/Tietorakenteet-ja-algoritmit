@@ -17,6 +17,20 @@ using namespace std;
  */
 int sortMod3(std::vector<int>& v)
 {
-    return EXIT_FAILURE;
+    try {
+        auto dividedByThree = partition(v.begin(), v.end(), [] (int x) { return x % 3 == 0;});
+        auto reminderOne = partition(dividedByThree, v.end(), [] (int x) { return x % 3 == 1;});
+
+        sort(v.begin(), dividedByThree);
+        sort(dividedByThree, reminderOne);
+        sort(reminderOne, v.end());
+
+        return EXIT_SUCCESS;
+    }
+
+    catch (const std::exception& e) {
+
+        return EXIT_FAILURE;
+    }
 }
 
