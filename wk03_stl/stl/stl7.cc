@@ -16,5 +16,18 @@ using namespace std;
  */
 int findMedian(std::vector<int>& v)
 {
+    if ( v.size() > 0 ) {
+        sort(v.begin(), v.end());
+        auto middle = v.size()/2;
+        if ( v.size() % 2 == 0) {
+            return (v[middle-1]+v[middle])/2;
+        }
+        else {
+            return v[middle];
+        }
+    }
+    else {
+        return NOT_FOUND;
+    }
 }
 
