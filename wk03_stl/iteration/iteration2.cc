@@ -14,12 +14,15 @@ using namespace std;
 
 void printEverySecond(const list<int>& lst)
 {
-    bool print = true;
-        for ( list<int>::const_iterator it = lst.begin() ; it != lst.end() ; ++it ) {
-            if ( print ) {
-                cout << *it << " ";
-            }
-            print = !print;
-        }
-        cout << endl;
+       std::list<int>::const_iterator it = lst.begin();
+       bool printElement = true;
+       while (it != lst.end()) {
+           if (printElement) {
+               std::cout << *it << " ";
+           }
+           printElement = !printElement;
+           ++it;
+       }
+
+       cout << endl;
 }
