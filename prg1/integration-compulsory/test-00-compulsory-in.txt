@@ -17,4 +17,3 @@ add_bite_to_contour 4 2
 get_bite_in_contours 3
 get_bite_in_contours 4
 all_contours
-all_subcontours_of_contour 1
