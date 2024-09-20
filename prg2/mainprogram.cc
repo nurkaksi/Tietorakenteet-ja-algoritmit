@@ -1805,6 +1805,7 @@ MainProgram::CmdResult MainProgram::cmd_next_bites_from(std::ostream &output,
     output << "No bites!" << endl;
   }
 
+  std::sort(bites.begin(), bites.end());
   return {ResultType::IDLIST,
           std::make_tuple(std::vector<ContourID>{},
                           std::vector<BiteID>{bites.begin(), bites.end()},
