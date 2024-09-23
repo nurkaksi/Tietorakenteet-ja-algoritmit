@@ -131,8 +131,6 @@ const std::set<std::string> bite_contour_tests = {"find_bite_with_coord", "chang
 int BITE_COUNTER = 1;
 int CONTOUR_COUNTER = 1;
 
-
-
 string const MainProgram::PROMPT = "> ";
 
 template <typename C, typename F>
@@ -261,7 +259,6 @@ MainProgram::cmd_get_contour_coords(std::ostream & /*output*/, MatchIter begin,
   return {ResultType::COORDLIST,
           CmdResultCoords{{NO_BITE, id}, contour_coordinates}};
 }
-
 
 MainProgram::CmdResult
 MainProgram::cmd_add_subcontour_to_contour(std::ostream &output,
@@ -685,7 +682,8 @@ std::pair<std::vector<int>, bool> MainProgram::add_random_contours2(Stopwatch &s
       int tmp_z = z % max_levels;
       bool isOK = ds_.add_contour(contour_id, "⛰️", tmp_z, {Coord((i * n) % w + x1, (j * n) % h + y1)});
 
-      if (isOK){
+      if (isOK)
+      {
         valid_contour_ids_.insert(contour_id);
         contour_ids_.push_back(contour_id);
         ++random_contours_added_;
@@ -704,11 +702,8 @@ std::pair<std::vector<int>, bool> MainProgram::add_random_contours2(Stopwatch &s
         }
         contour_id++;
 
-
-
         while (++z % max_levels < 2)
           ;
-
       }
     }
     if (contour_id >= N)
@@ -772,7 +767,6 @@ std::pair<std::vector<int>, bool> MainProgram::add_random_contours(Stopwatch &st
           contour_ids_.push_back(contour_id);
           ++random_contours_added_;
           contour_ids.push_back(contour_id++);
-
         }
       }
     }
@@ -908,7 +902,6 @@ bool MainProgram::add_random_coord_connections(Stopwatch &stopwatch,
 
   return true;
 }
-
 
 /**
  * Just bites - no contours
@@ -1735,7 +1728,7 @@ MainProgram::CmdResult MainProgram::cmd_add_connection(std::ostream &,
   }
 
   // Coord list can be empty
-  bool success = ds_.add_connection(connection_id, bite_ids[0],bite_ids[1], coords);
+  bool success = ds_.add_connection(connection_id, bite_ids[0], bite_ids[1], coords);
 
   return {ResultType::IDLIST,
           std::make_tuple(std::vector<ContourID>{}, std::vector<BiteID>{},
@@ -1765,7 +1758,7 @@ bool MainProgram::test_add_connection(Stopwatch &stopwatch)
     coords = {middle};
   }
   stopwatch.start();
-  bool success = ds_.add_connection(connection_id, bite_id1,bite_id2, coords);
+  bool success = ds_.add_connection(connection_id, bite_id1, bite_id2, coords);
   stopwatch.stop();
 
   return success;
@@ -1956,7 +1949,7 @@ MainProgram::CmdResult MainProgram::cmd_path_any(std::ostream &output,
     for (auto iter = steps.begin() + 1; iter != steps.end(); ++iter)
     {
       auto &[ncoord, ndist] = *iter;
-      result.emplace_back(coord, ncoord, dist);
+      result.emplace_back(coord, ncoord, ndist);
       coord = ncoord;
       dist = ndist;
     }
@@ -2013,7 +2006,7 @@ MainProgram::CmdResult MainProgram::cmd_path_shortest(std::ostream &output,
     for (auto iter = steps.begin() + 1; iter != steps.end(); ++iter)
     {
       auto &[ncoord, ndist] = *iter;
-      result.emplace_back(coord, ncoord, dist);
+      result.emplace_back(coord, ncoord, ndist);
       coord = ncoord;
       dist = ndist;
     }
@@ -2069,7 +2062,7 @@ MainProgram::CmdResult MainProgram::cmd_path_least_bites(std::ostream &output,
     for (auto iter = steps.begin() + 1; iter != steps.end(); ++iter)
     {
       auto &[ncoord, ndist] = *iter;
-      result.emplace_back(coord, ncoord, dist);
+      result.emplace_back(coord, ncoord, ndist);
       coord = ncoord;
       dist = ndist;
     }
@@ -2125,7 +2118,7 @@ MainProgram::CmdResult MainProgram::cmd_path_least_uphill(std::ostream &output,
     for (auto iter = steps.begin() + 1; iter != steps.end(); ++iter)
     {
       auto &[ncoord, ndist] = *iter;
-      result.emplace_back(coord, ncoord, dist);
+      result.emplace_back(coord, ncoord, ndist);
       coord = ncoord;
       dist = ndist;
     }
@@ -2148,7 +2141,6 @@ bool MainProgram::test_path_least_uphill(Stopwatch &stopwatch)
   stopwatch.stop();
   return true;
 }
-
 
 MainProgram::CmdResult MainProgram::cmd_testread(std::ostream &output,
                                                  MatchIter begin,
@@ -3552,12 +3544,10 @@ ContourID MainProgram::random_contour_id()
   return random<ContourID>(0, MAX_CONTOURID);
 }
 
-
 ConnectionID MainProgram::random_connection_id()
 {
   return random<ConnectionID>(0, MAX_CONNECTIONID);
 }
-
 
 Name MainProgram::n_to_name(unsigned long n)
 {
@@ -3669,7 +3659,6 @@ ConnectionID MainProgram::n_to_connectionid(unsigned long n)
   return id;
 }
 
-
 void MainProgram::clear_test_cache()
 {
   valid_bite_ids_.clear();
@@ -3734,7 +3723,6 @@ ConnectionID MainProgram::random_valid_connection()
   return n_to_connectionid(
       random<decltype(connection_ids_.size())>(0, connection_ids_.size()));
 }
-
 
 void MainProgram::init_regexs()
 {
