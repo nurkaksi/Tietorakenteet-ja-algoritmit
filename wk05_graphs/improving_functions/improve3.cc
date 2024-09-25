@@ -16,11 +16,13 @@
  */
 std::map<int, int> cumulativeSums(std::vector<int> v) {
     std::map<int,int> sums;
-    if (sums.empty())
-    { sums[v[0]] = v[0]; }
-    for (unsigned int i=0; i<v.size(); ++i) {
+    // lisätään ensimmäinen alkio semmoisenaan, ei tarvitse
+    // joka välissä tarkistaa onko sums tyhjä
+    sums[v[0]] = v[0];
+    for (unsigned int i=1; i<v.size(); ++i) {
 
-       { sums[v[i]] = sums[v[i-1]] + v[i]; }
+       //poistettu operaatio .at, koska se on turha
+       sums[v[i]] = sums[v[i-1]] + v[i];
     }
     return sums;
 }
