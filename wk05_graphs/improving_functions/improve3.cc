@@ -21,8 +21,8 @@ std::map<int, int> cumulativeSums(std::vector<int> v) {
     sums[v[0]] = v[0];
     for (unsigned int i=1; i<v.size(); ++i) {
 
-       // poistettu operaatio .at, koska se on turha ja aloitetaan
-       // toisesta elementistä
+       // poistettu operaatio .at, koska se on turha.
+       // aloitetaan täällä toisesta elementistä
        sums[v[i]] = sums[v[i-1]] + v[i];
     }
     return sums;
