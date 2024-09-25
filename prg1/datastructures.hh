@@ -8,11 +8,21 @@
 #include <vector>
 
 // Add your own STL includes below this comment
+#include <string>
+#include <unorderedmap>
+#include <iostream>
+#include <algorithm>
+
+using BiteID = long long;
+using ContourID = long long;
+using Name = std::string;
+using Coord = Coord;
+using ContourHeight = int;
 
 template <typename Type>
 Type random_in_range(Type start, Type end);
 
-// This is the class you are supposed to implement
+};
 
 class Datastructures
 {
@@ -116,7 +126,23 @@ public:
                                                     ContourID /*id2*/);
 
 private:
-  // Add stuff needed for your class implementation here
+
+  struct Bite {
+      Name name;
+      Coord coord;
+  };
+
+  struct Contour {
+      Name name;
+      Coord coord;
+      ContourID parent_id;
+      std::vector<ContourID> children_ids;
+  };
+  // container for bites
+  std::unordered_map<BiteID, Bite> bites_;
+
+  //container for contours
+  std::unorderedmap<ContourID, Contour> contours_;
 };
 
 #endif // DATASTRUCTURES_HH

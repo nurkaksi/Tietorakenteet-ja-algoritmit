@@ -19,41 +19,74 @@ Datastructures::~Datastructures()
   // Write any cleanup you need here
 }
 
-unsigned int Datastructures::get_bite_count()
+
+unsigned int Datastructures::getbite_count()
 {
-  // Replace the line below with your implementation
-  throw NotImplemented("get_bite_count");
+    // Returns the amout of bites in the container
+    return bites_.size();
 }
+
 
 void Datastructures::clear_all()
 {
-  // Replace the line below with your implementation
-  throw NotImplemented("clear_all");
+  // Clears the containers from all bites and contours
+  bites_.clear();
+  contours_.clear();
 }
 
 std::vector<BiteID> Datastructures::all_bites()
 {
-  // Replace the line below with your implementation
-  throw NotImplemented("all_bites");
+    // Using vector as a container for bite-ids
+    std::vector<BiteID> bite_ids;
+
+    for ( const auto& bite : bites_ ) {
+        bite_ids.push_back(bite.first);
+    }
+
+    return bite_ids;
 }
 
-bool Datastructures::add_bite(BiteID /*id*/, const Name & /*name*/, Coord /*xy*/)
+
+bool Datastructures::add_bite(BiteID id, Name name, Coord xy)
 {
-  // Replace the line below with your implementation
-  throw NotImplemented("add_bite");
+  // Return false if the bite already excists
+  if (bites_.find(id) != bites_.end()) {
+      return false;
+  }
+  // Return false if there is already a bite in the coordinates
+  for ( const auto& pair : bites_ ) {
+      if ( pair.second.coord == xy ) {
+          return false;
+      }
+  }
+
+  // Add new bite to the container and return true
+  bites_[id]=Bite{name, xy};
+  return true;
 }
 
-Name Datastructures::get_bite_name(BiteID /*id*/)
+
+Name Datastructures::get_bite_name(BiteID id)
 {
-  // Replace the line below with your implementation
-  throw NotImplemented("get_bite_name");
+  // If there is a bite with the given ID, return the name
+  if (bites_.find(id) != bites_.end()) {
+      return bites_[id].name;
+  }
+  // If bite was not found, return NO_NAME
+  return NO_NAME;
 }
 
-Coord Datastructures::get_bite_coord(BiteID /*id*/)
+
+Coord Datastructures::get_bite_coord(BiteID id)
 {
-  // Replace the line below with your implementation
-  throw NotImplemented("get_bite_coord");
+  // If there is a bite with given coordinates, return coordinates
+  if (bites_.find(id) != bites_.end()) {
+      return bites_[id].coord;
+  }
+  // If the bite was not found, return NO_COORD
+  return NO_COORD;
 }
+
 
 std::vector<BiteID> Datastructures::get_bites_alphabetically()
 {
