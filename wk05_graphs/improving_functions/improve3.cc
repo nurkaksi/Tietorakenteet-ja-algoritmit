@@ -16,11 +16,11 @@
  */
 std::map<int, int> cumulativeSums(std::vector<int> v) {
     std::map<int,int> sums;
+    if (sums.empty())
+    { sums[v[0]] = v[0]; }
     for (unsigned int i=0; i<v.size(); ++i) {
-        if (sums.empty())
-        { sums[v[i]] = v[i]; }
-        else
-        { sums[v[i]] = sums.at(v[i-1]) + v[i]; }
+
+       { sums[v[i]] = sums[v[i-1]] + v[i]; }
     }
     return sums;
 }
