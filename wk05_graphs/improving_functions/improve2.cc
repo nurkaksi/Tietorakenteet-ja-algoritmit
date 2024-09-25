@@ -11,10 +11,6 @@
  */
 int minValue(std::vector<int> vec){
     if ( vec.empty() ) { return 0; }
-    if ( std::is_sorted(vec.begin(), vec.end()) ) {
-        return vec[0];
-    } else {
-        std::sort(vec.begin(), vec.end());
-        return vec[0];
-    }
+
+    return *min_element(vec.begin(), vec.end());
 }

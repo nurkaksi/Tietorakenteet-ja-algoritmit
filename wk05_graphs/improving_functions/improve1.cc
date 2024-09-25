@@ -11,7 +11,7 @@
  * @return std::vector<int>
  */
 std::vector<int> ascendingVector(int n){
-    std::vector<int> v(n);
+    std::vector<int> v(n); // määritellään n kokoinen vektori
 
     // varataan valmiiksi riittävästi muistia vektoria varten
     v.reserve(n);
