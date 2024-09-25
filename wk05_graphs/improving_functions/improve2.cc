@@ -12,5 +12,6 @@
 int minValue(std::vector<int> vec){
     if ( vec.empty() ) { return 0; }
 
+    // käytetään valmista stl-kirjaston funktiota
     return *min_element(vec.begin(), vec.end());
 }
