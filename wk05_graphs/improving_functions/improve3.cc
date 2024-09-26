@@ -14,7 +14,7 @@
  * @return std::map<int, int> sums - the sums of each cumulation stored in
  *         a map as values, vector values used as keys.
  */
-std::map<int, int> cumulativeSums(std::vector<int> v) {
+std::map<int, int> cumulativeSums(const std::vector<int> v) {
     std::map<int,int> sums;
     // luodaan apumuuttuja joka ylläpitää summaa
     int cumulativesum = v[0];
