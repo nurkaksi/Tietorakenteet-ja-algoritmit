@@ -16,6 +16,9 @@
  */
 std::map<int, int> cumulativeSums(std::vector<int> v) {
     std::map<int,int> sums;
+    // luodaan apumuuttuja joka ylläpitää summaa
+    int cumulativesum = v[0];
+
     // lisätään ensimmäinen alkio semmoisenaan, ei tarvitse
     // joka välissä tarkistaa onko sums tyhjä
     sums[v[0]] = v[0];
@@ -23,7 +26,8 @@ std::map<int, int> cumulativeSums(std::vector<int> v) {
 
        // poistettu operaatio .at, koska se on turha.
        // aloitetaan täällä toisesta elementistä
-       sums[v[i]] = sums[v[i-1]] + v[i];
+       cumulativesum += v[i];
+       sums[v[i]] = cumulativesum;
     }
     return sums;
 }
