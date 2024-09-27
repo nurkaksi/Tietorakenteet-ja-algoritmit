@@ -51,13 +51,13 @@ Connection:
 5. (2,2) (distance 26)
 > # Test non-existing bite
 > path_shortest 1 4
-Path not found!
+Input BiteID was not found
 > # Test Non-existing path
 > add_bite 4 "🍏" (13, 5)
 Bite:
    🍏: pos=(13,5), id=4
 > path_shortest 1 4
-Path empty!
+Path not found!
 > # Test a T-crossing
 > add_connection 03 2 4 (12,5)
 Connection:

@@ -54,14 +54,14 @@ Connection:
 5. (2,2) (distance 14)
 > # Test non-existing bite
 > path_any 1 5
-Path not found!
+Input BiteID was not found
 > path_any 6 2
-Path not found!
+Input BiteID was not found
 > # Test Non-existing connection
 > path_any 1 4
-Path empty!
+Path not found!
 > path_any 4 2
-Path empty!
+Path not found!
 > # Test a T-crossing
 > add_connection 03 4 2 (6,5)
 Connection:

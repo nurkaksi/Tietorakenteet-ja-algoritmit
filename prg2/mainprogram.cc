@@ -1937,11 +1937,11 @@ MainProgram::CmdResult MainProgram::cmd_path_any(std::ostream &output,
 
   if (steps.empty())
   {
-    output << "Path empty!" << endl;
+    output << "Path not found!" << endl;
   }
   else if (steps.front() == make_pair(NO_COORD, NO_DISTANCE))
   {
-    output << "Path not found!" << endl;
+    output << "Input BiteID was not found" << endl;
   }
   else
   {
@@ -1994,11 +1994,11 @@ MainProgram::CmdResult MainProgram::cmd_path_shortest(std::ostream &output,
 
   if (steps.empty())
   {
-    output << "Path empty!" << endl;
+    output << "Path not found!" << endl;
   }
   else if (steps.front() == make_pair(NO_COORD, NO_DISTANCE))
   {
-    output << "Path not found!" << endl;
+    output << "Input BiteID was not found" << endl;
   }
   else
   {
@@ -2050,11 +2050,11 @@ MainProgram::CmdResult MainProgram::cmd_path_least_bites(std::ostream &output,
 
   if (steps.empty())
   {
-    output << "Path empty!" << endl;
+    output << "Path not found!" << endl;
   }
   else if (steps.front() == make_pair(NO_COORD, NO_DISTANCE))
   {
-    output << "Path not found!" << endl;
+    output << "Input BiteID was not found" << endl;
   }
   else
   {
@@ -2106,11 +2106,11 @@ MainProgram::CmdResult MainProgram::cmd_path_least_uphill(std::ostream &output,
 
   if (steps.empty())
   {
-    output << "Path empty!" << endl;
+    output << "Path not found!" << endl;
   }
   else if (steps.front() == make_pair(NO_COORD, NO_DISTANCE))
   {
-    output << "Path not found!" << endl;
+    output << "Input BiteID was not found" << endl;
   }
   else
   {
