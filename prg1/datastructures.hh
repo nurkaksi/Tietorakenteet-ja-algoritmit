@@ -65,8 +65,8 @@ public:
   // Short rationale for estimate:
   std::vector<BiteID> get_bites_distance_increasing();
 
-  // Estimate of performance:
-  // Short rationale for estimate:
+  // Estimate of performance: O(n)
+  // Short rationale for estimate: function goes through the whole container once
   BiteID find_bite_with_coord(Coord /*xy*/);
 
   // Estimate of performance:

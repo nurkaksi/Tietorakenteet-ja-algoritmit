@@ -15,8 +15,12 @@
  *         a map as values, vector values used as keys.
  */
 std::map<int, int> cumulativeSums(const std::vector<int> v) {
+    // tuonne parametreihin laitettu const niin vektoria ei
+    // tarvitse kopioida montaa kertaa
+
     std::map<int,int> sums;
-    // luodaan apumuuttuja joka ylläpitää summaa
+    // luodaan apumuuttuja joka ylläpitää summaa niin sitä ei
+    // tarvitse laskea jokaisella for loopin kierroksella
     int cumulativesum = v[0];
 
     // lisätään ensimmäinen alkio semmoisenaan, ei tarvitse

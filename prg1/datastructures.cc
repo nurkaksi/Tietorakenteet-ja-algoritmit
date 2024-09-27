@@ -78,6 +78,7 @@ Name Datastructures::get_bite_name(BiteID id)
 
 
 Coord Datastructures::get_bite_coord(BiteID id)
+// Finds bite's coordinates by its ID
 {
   // If there is a bite with given coordinates, return coordinates
   if (bites_.find(id) != bites_.end()) {
@@ -90,8 +91,22 @@ Coord Datastructures::get_bite_coord(BiteID id)
 
 std::vector<BiteID> Datastructures::get_bites_alphabetically()
 {
-  // Replace the line below with your implementation
-  throw NotImplemented("get_bites_alphabetically");
+  std::vector<BiteID> bite_ids;
+
+  // Reserving enough memory for the vector
+  bite_ids.reserve(bites_.size());
+
+  // Push bites into the vector
+  for (const auto& [id, bite] : bites_) {
+      bite_ids.push_back(id);
+  }
+
+  // sort the vector by using a lambda function
+  std::sort(bite_ids.begin(), bite_ids.end(), [this](const BiteID& id1, const BiteID& id2) {
+      return bites_.at(id1).name < bites_.at(id2).name;
+  });
+
+  return bite_ids;
 }
 
 std::vector<BiteID> Datastructures::get_bites_distance_increasing()
@@ -100,10 +115,18 @@ std::vector<BiteID> Datastructures::get_bites_distance_increasing()
   throw NotImplemented("get_bites_distance_increasing");
 }
 
-BiteID Datastructures::find_bite_with_coord(Coord /*xy*/)
+BiteID Datastructures::find_bite_with_coord(Coord xy)
+// Finds bite by its coordinates
 {
-  // Replace the line below with your implementation
-  throw NotImplemented("find_bite_with_coord");
+    // goes through bites_ container and compares given
+    // coordinates with every bite's coordinates
+    for (const auto& [id, bite] : bites_) {
+        if (bite.coord == xy) {
+            return id;
+        }
+    }
+    // return NO_BITE if bite with given coordinates was not found
+    return NO_BITE;
 }
 
 bool Datastructures::change_bite_coord(BiteID /*id*/, Coord /*newcoord*/)
