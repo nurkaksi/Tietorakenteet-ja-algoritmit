@@ -317,6 +317,9 @@ template <typename Type>
 Type MainProgram::random(Type start, Type end)
 {
   auto range = end - start;
+  if (range==0)
+    return static_cast<Type>(start);
+
   assert(range != 0 && "random() with zero range!");
 
   auto num = std::uniform_int_distribution<unsigned long int>(0, range - 1)(
