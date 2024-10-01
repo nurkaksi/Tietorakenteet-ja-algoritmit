@@ -122,7 +122,7 @@ Contours:
 > clear_all
 Cleared all bites
 > get_contour_coords 19
-Coordinates:
+Failed (NO_COORD returned)!
 > get_bite_in_contours 3
 Bite:
    !NO_NAME!: pos=(--NO_COORD--), id=3
