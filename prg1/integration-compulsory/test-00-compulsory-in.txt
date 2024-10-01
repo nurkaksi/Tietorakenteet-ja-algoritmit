@@ -17,3 +17,7 @@ add_bite_to_contour 4 2
 get_bite_in_contours 3
 get_bite_in_contours 4
 all_contours
+clear_all
+get_contour_coords 19
+get_bite_in_contours 3
+all_contours

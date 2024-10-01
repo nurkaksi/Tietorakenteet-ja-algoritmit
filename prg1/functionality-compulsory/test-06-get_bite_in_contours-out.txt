@@ -328,6 +328,11 @@ Bites:
 3. 🦋: pos=(18,13), id=2
 4. 🎁: pos=(14,13), id=3
 5. 🍢: pos=(8,2), id=4
+> add_bite 99 "🎁" (1,1)
+Bite:
+   🎁: pos=(1,1), id=99
+> add_bite_to_contour 99 7
+Adding a bite to contour failed!
 > clear_all
 Cleared all bites
 > 
