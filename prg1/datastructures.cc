@@ -319,10 +319,37 @@ bool Datastructures::add_bite_to_contour(BiteID biteid, ContourID contourid)
     return true;
 }
 
-std::vector<ContourID> Datastructures::get_bite_in_contours(BiteID /*id*/)
+std::vector<ContourID> Datastructures::get_bite_in_contours(BiteID id)
 {
-  // Replace the line below with your implementation
-  throw NotImplemented("get_bite_in_contours");
+    // palautetaan NO_CONTOUR jos suupalaa ei löydy
+    if ( bites_.find(id) == bites_.end() ) {
+        return {NO_CONTOUR};
+    }
+
+    // Palautetaan tyhjä vektori jos suupala ei kuulu mihinkään korkeuskäyrään
+    if ( bites_.find(id) != bites_.end() ) {
+        if ( bites_[id].bites_contour == -1 ) {
+            return {};
+        }
+    }
+
+    // luodaan vektori johon tallennetaan kaikki korkeuskäyrät joihin
+    // suupala kuuluu suorasti tai epäsuorasti
+    std::vector<ContourID> all_contours;
+
+    // etsitään mille korkeuskäyrälle suupala on tallennettu ja lähdetään etenemään siitä
+    ContourID current_contour = bites_[id].bites_contour;
+
+    // Silmukka etsii suupalan korkeuskäyrän kaikki vanhemmat
+    while (current_contour != -1) {
+        all_contours.push_back(current_contour);
+
+        // siirrytään ylempään vanhempaan
+        current_contour = contours_[current_contour].parentid;
+    }
+
+    return all_contours;
+
 }
 
 std::vector<ContourID>
