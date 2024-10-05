@@ -97,9 +97,18 @@ std::vector<BiteID> Datastructures::get_bites_alphabetically()
       bite_ids.push_back(id);
   }
 
-  // sortataan vektori aakkosjärjestykseen lambda-funktion avulla
+  // Sortataan vektori aakkosjärjestykseen, jos nimet ovat samat, sortataan id:llä
   std::sort(bite_ids.begin(), bite_ids.end(), [this](const BiteID& id1, const BiteID& id2) {
-      return bites_.at(id1).name < bites_.at(id2).name;
+      const auto& bite1 = bites_.at(id1);
+      const auto& bite2 = bites_.at(id2);
+
+      // Ensin vertaillaan nimiä
+      if (bite1.name != bite2.name) {
+          return bite1.name < bite2.name;
+      }
+
+      // Jos nimet ovat samat, vertaillaan id:tä
+      return id1 < id2;
   });
 
   return bite_ids;
