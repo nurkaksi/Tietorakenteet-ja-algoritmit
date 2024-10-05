@@ -9,7 +9,7 @@
 
 // Add your own STL includes below this comment
 #include <string>
-#include <unorderedmap>
+#include <unordered_map>
 #include <iostream>
 #include <algorithm>
 
@@ -22,7 +22,6 @@ using ContourHeight = int;
 template <typename Type>
 Type random_in_range(Type start, Type end);
 
-};
 
 class Datastructures
 {
@@ -44,7 +43,7 @@ public:
 
   // Estimate of performance:
   // Short rationale for estimate:
-  bool add_bite(BiteID /*id*/, const Name & /*name*/, Coord /*xy*/);
+  bool add_bite(BiteID id, const Name & name, Coord xy);
 
   // Estimate of performance:
   // Short rationale for estimate:
@@ -67,7 +66,7 @@ public:
 
   // Estimate of performance: O(n)
   // Short rationale for estimate: function goes through the whole container once
-  BiteID find_bite_with_coord(Coord /*xy*/);
+  BiteID find_bite_with_coord(Coord xy);
 
   // Estimate of performance:
   // Short rationale for estimate:
@@ -75,8 +74,8 @@ public:
 
   // Estimate of performance:
   // Short rationale for estimate:
-  bool add_contour(ContourID /*id*/, const Name & /*name*/, ContourHeight /*height*/,
-                   std::vector<Coord> /*coords*/);
+  bool add_contour(ContourID id, const Name & name, ContourHeight height,
+                   std::vector<Coord> coords);
 
   // Estimate of performance:
   // Short rationale for estimate:
@@ -130,19 +129,28 @@ private:
   struct Bite {
       Name name;
       Coord coord;
+      ContourID bites_contour = -1;
   };
 
   struct Contour {
       Name name;
-      Coord coord;
-      ContourID parent_id;
+      ContourHeight height;
+      std::vector<Coord> coords;
+      ContourID parentid = -1;
       std::vector<ContourID> children_ids;
+      std::vector<BiteID> bites_in_contour;
   };
-  // container for bites
+  // säiliö suupaloille
   std::unordered_map<BiteID, Bite> bites_;
 
-  //container for contours
-  std::unorderedmap<ContourID, Contour> contours_;
+  // säiliö korkeuskäyrille
+  std::unordered_map<ContourID, Contour> contours_;
+
+  // säiliö suupaloille koordinaattien perusteella
+  // (nopeuttaa hakua koordinaatin perusteella ja pitää kirjaa käytetyistä koordinaateista)
+  std::unordered_map<Coord, BiteID> coordinates_in_use;
+
+
 };
 
 #endif // DATASTRUCTURES_HH
