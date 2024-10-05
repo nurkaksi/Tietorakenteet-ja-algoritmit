@@ -87,31 +87,38 @@ Coord Datastructures::get_bite_coord(BiteID id)
 
 std::vector<BiteID> Datastructures::get_bites_alphabetically()
 {
-    std::vector<BiteID> bite_ids;
 
-    // Varataan tilaa vektorille
-    bite_ids.reserve(bites_.size());
+    // luodaan vektroi nimille ja id:lle ja varataan niille riittävästi tilaa
+    std::vector<std::pair<BiteID, Name>> name_id;
+    name_id.reserve(bites_.size());
 
-    // Lisätään suupalat vektoriin
-    for (const auto& [id, bite] : bites_) {
-        bite_ids.push_back(id);
+    for ( const auto& [id, info] : bites_ ) {
+        name_id.emplace_back(id, info.name);
     }
 
-    // Sortataan vektori aakkosjärjestykseen, ja jos nimet ovat samat, sortataan id:n mukaan
-    std::sort(bite_ids.begin(), bite_ids.end(), [this](const BiteID& id1, const BiteID& id2) {
-        const auto& bite1 = bites_.at(id1);
-        const auto& bite2 = bites_.at(id2);
 
-        // Vertaillaan nimiä ensin
-        if (bite1.name != bite2.name) {
-            return bite1.name < bite2.name;
+    auto compare_name = [](const std::pair<BiteID, Name>& a,
+                           const std::pair<BiteID, Name>& b)
+                           -> bool {
+
+        if ( a.second == b.second ) {
+            return a.first < b.first;
         }
 
-        // Jos nimet ovat samat, vertaillaan id:tä käyttämällä std::less
-        return std::less<BiteID>()(id1, id2);
-    });
+        return a.second < b.second;
 
-    return bite_ids;
+    };
+
+    std::sort(name_id.begin(), name_id.end(), compare_name);
+
+
+    std::vector<BiteID> sorted_ids_;
+    for ( const auto& pair : name_id ) {
+        sorted_ids_.push_back(pair.first);
+    }
+
+    return sorted_ids_;
+
 }
 
 std::vector<BiteID> Datastructures::get_bites_distance_increasing()
