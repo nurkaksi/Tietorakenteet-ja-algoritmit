@@ -379,7 +379,7 @@ std::vector<ContourID> Datastructures::get_bite_in_contours(BiteID id)
         // siirrytään ylempään vanhempaan
         current_contour = contours_[current_contour].parentid;
     }
-    // palautetaan vektori kaikista suupalan korkeuskäyristä´
+    // palautetaan vektori kaikista suupalan korkeuskäyristä
     return all_contours;
 
 }

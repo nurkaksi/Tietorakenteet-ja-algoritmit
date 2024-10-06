@@ -29,81 +29,83 @@ public:
   Datastructures();
   ~Datastructures();
 
-  // Estimate of performance:
-  // Short rationale for estimate:
+  // Estimate of performance: O(1)
+  // Short rationale for estimate: stl:n size-funktion käyttö on vakioaikainen operaatio
   unsigned int get_bite_count();
 
-  // Estimate of performance:
-  // Short rationale for estimate:
+  // Estimate of performance: O(n)
+  // Short rationale for estimate: kaikki alkiot käydään kerran läpi
   void clear_all();
 
-  // Estimate of performance:
-  // Short rationale for estimate:
+  // Estimate of performance: O(n)
+  // Short rationale for estimate: kaikki suupalat käydään kerran läpi
   std::vector<BiteID> all_bites();
 
-  // Estimate of performance:
-  // Short rationale for estimate:
+  // Estimate of performance: O(1)
+  // Short rationale for estimate: kaikki tarkistukset ja itse lisäys ovat vakioaikaisia
   bool add_bite(BiteID id, const Name & name, Coord xy);
 
-  // Estimate of performance:
-  // Short rationale for estimate:
-  Name get_bite_name(BiteID /*id*/);
+  // Estimate of performance: O(1)
+  // Short rationale for estimate: tarkistus ja nimen palauttaminen ovat vakioaikaisia
+  Name get_bite_name(BiteID id);
 
-  // Estimate of performance:
-  // Short rationale for estimate:
-  Coord get_bite_coord(BiteID /*id*/);
+  // Estimate of performance: O(1)
+  // Short rationale for estimate: tarkistus ja sijainnin palautus ovat vakioaikaisia
+  Coord get_bite_coord(BiteID id);
 
   // We recommend you implement the operations below only after implementing the
   // ones above
 
-  // Estimate of performance:
-  // Short rationale for estimate:
+  // Estimate of performance: O(n*log(n))
+  // Short rationale for estimate: lajittelu vie aikaa O(n*log(n))
   std::vector<BiteID> get_bites_alphabetically();
 
-  // Estimate of performance:
-  // Short rationale for estimate:
+  // Estimate of performance: O(n*log(n))
+  // Short rationale for estimate: jälleen joudutaan lajittelemaan joka on O(nlogn)
   std::vector<BiteID> get_bites_distance_increasing();
 
   // Estimate of performance: O(n)
-  // Short rationale for estimate: function goes through the whole container once
+  // Short rationale for estimate: kaikki suupalat käydään läpi, joten operaatio on lineaarinen
   BiteID find_bite_with_coord(Coord xy);
 
-  // Estimate of performance:
-  // Short rationale for estimate:
-  bool change_bite_coord(BiteID /*id*/, Coord /*newcoord*/);
+  // Estimate of performance: O(n)
+  // Short rationale for estimate: find-operaatio on lineaarinen, muu vakioaikaista
+  bool change_bite_coord(BiteID id, Coord newcoord);
 
-  // Estimate of performance:
-  // Short rationale for estimate:
+  // Estimate of performance: O(n)
+  // Short rationale for estimate: kopioiminen on lineaarinen operaatio, muu vakioaikaista
   bool add_contour(ContourID id, const Name & name, ContourHeight height,
                    std::vector<Coord> coords);
 
-  // Estimate of performance:
-  // Short rationale for estimate:
+  // Estimate of performance: O(n)
+  // Short rationale for estimate: silmukka käy kaiken läpi (lineaarinen),
+  // push_back() on vakioaikainen
   std::vector<ContourID> all_contours();
 
-  // Estimate of performance:
-  // Short rationale for estimate:
-  Name get_contour_name(ContourID /*id*/);
+  // Estimate of performance: O(1)
+  // Short rationale for estimate: hajautustaulusta haku on vakioaikaista
+  Name get_contour_name(ContourID id);
 
-  // Estimate of performance:
-  // Short rationale for estimate:
-  std::vector<Coord> get_contour_coords(ContourID /*id*/);
+  // Estimate of performance: O(n)
+  // Short rationale for estimate: find-operaatio on lineaariaikainen
+  std::vector<Coord> get_contour_coords(ContourID id);
 
-  // Estimate of performance:
-  // Short rationale for estimate:
-  ContourHeight get_contour_height(ContourID /*id*/);
+  // Estimate of performance: O(1)
+  // Short rationale for estimate: hajautustaulusta haku on vakioaikaista
+  ContourHeight get_contour_height(ContourID id);
 
-  // Estimate of performance:
-  // Short rationale for estimate:
-  bool add_subcontour_to_contour(ContourID /*id*/, ContourID /*parentid*/);
+  // Estimate of performance: O(n)
+  // Short rationale for estimate: find-operaatio on lineaariaikainen, muu vakioaikaista
+  bool add_subcontour_to_contour(ContourID id, ContourID parentid);
 
-  // Estimate of performance:
-  // Short rationale for estimate:
-  bool add_bite_to_contour(BiteID biteid, ContourID /*parentid*/);
+  // Estimate of performance: O(n)
+  // Short rationale for estimate: find-operaatio on lineaariaikainen, muu vakioaikaista
+  bool add_bite_to_contour(BiteID biteid, ContourID parentid);
 
-  // Estimate of performance:
-  // Short rationale for estimate:
-  std::vector<ContourID> get_bite_in_contours(BiteID /*id*/);
+  // Estimate of performance: O(n)
+  // Short rationale for estimate: pahimmassa tapauksessa käydään kaikki korkeuskäyrät läpi,
+  // muu vakioaikaista
+  std::vector<ContourID> get_bite_in_contours(BiteID id);
 
   // Non-compulsory operations
 
