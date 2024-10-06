@@ -51,13 +51,14 @@ std::vector<BiteID> Datastructures::all_bites()
 bool Datastructures::add_bite(BiteID id, const Name &name, Coord xy)
 {
     // Jos suupala on jo olemassa tai koordinaatti on jo käytössä, palautetaan false
-    if (bites_.find(id) != bites_.end() || coordinates_in_use.find(xy) != coordinates_in_use.end()) {
+    if (bites_.find(id) != bites_.end()
+            || coordinates_in_use.find(xy) != coordinates_in_use.end()) {
         return false;
     }
 
     // lisätään suupala (
-    bites_[id] = Bite{name, xy};
-    coordinates_in_use[xy] = id;
+    bites_.emplace(id, Bite{name, xy});
+    coordinates_in_use.emplace(xy, id);
     return true;
 }
 
@@ -88,19 +89,21 @@ Coord Datastructures::get_bite_coord(BiteID id)
 std::vector<BiteID> Datastructures::get_bites_alphabetically()
 {
 
-    // luodaan vektroi nimille ja id:lle ja varataan niille riittävästi tilaa
-    std::vector<std::pair<BiteID, Name>> name_id;
-    name_id.reserve(bites_.size());
+    // Luodaan vektori suupalan id:ille ja nimille
+    std::vector<std::pair<BiteID, Name>> bite_pair;
+    // varataan sopivasti muistia vektoria varten
+    bite_pair.reserve(bites_.size());
 
     for ( const auto& [id, info] : bites_ ) {
-        name_id.emplace_back(id, info.name);
+        bite_pair.emplace_back(id, info.name);
     }
 
-
+    // vertaillaan nimien perusteella
     auto compare_name = [](const std::pair<BiteID, Name>& a,
                            const std::pair<BiteID, Name>& b)
                            -> bool {
 
+        // jos kaksi samaa nimeä, vertaillaan id:itä
         if ( a.second == b.second ) {
             return a.first < b.first;
         }
@@ -109,54 +112,67 @@ std::vector<BiteID> Datastructures::get_bites_alphabetically()
 
     };
 
-    std::sort(name_id.begin(), name_id.end(), compare_name);
-
+    // sortataan nimen perusteella ja laitetaan vektoriin
+    std::sort(bite_pair.begin(), bite_pair.end(), compare_name);
 
     std::vector<BiteID> sorted_ids_;
-    for ( const auto& pair : name_id ) {
+    for ( const auto& pair : bite_pair ) {
         sorted_ids_.push_back(pair.first);
     }
 
     return sorted_ids_;
 
+
 }
 
 std::vector<BiteID> Datastructures::get_bites_distance_increasing()
 {
-    std::vector<BiteID> bite_ids;
-    bite_ids.reserve(bites_.size());
+    // Luodaan vektori suupalan id:itä ja koordinaatteja varten
+    std::vector<std::pair<BiteID, Coord>> bite_pair;
+    // varataan vektorille sopivasti muistia
+    bite_pair.reserve(bites_.size());
 
-    // Kopioidaan kaikki suupalau vektoriin
-    for (const auto& pair : bites_) {
-        bite_ids.push_back(pair.first);
+    // käydään bites_ säiliö läpi ja laitetaan tiedot luotuun vektoriin
+    for (const auto& bite : bites_) {
+        bite_pair.push_back({bite.first, bite.second.coord});
     }
 
-    // Sortataan manhattan etäisyyden perusteella, käytämällä lambda-funktiota
-    std::sort(bite_ids.begin(), bite_ids.end(), [this](const BiteID& id1, const BiteID& id2) {
-        const auto& coord1 = bites_.at(id1).coord;
-        const auto& coord2 = bites_.at(id2).coord;
+    // Vertaillaan alkioita lambda-funktion avulla
+    auto compare_coordinates = [](const std::pair<BiteID, Coord>& a,
+                                  const std::pair<BiteID, Coord>& b) -> bool {
 
-        int distance1 = std::abs(coord1.x) + std::abs(coord1.y);
-        int distance2 = std::abs(coord2.x) + std::abs(coord2.y);
+        const auto& coord_a = a.second;
+        const auto& coord_b = b.second;
 
-        // Ensisijaisesti vertaillaan Manhattan-etäisyyden mukaan
-        if (distance1 != distance2) {
-            return distance1 < distance2;
+        // Lasketaan manhattan-etäisyys
+        int manhattan_a = std::abs(coord_a.x) + std::abs(coord_a.y);
+        int manhattan_b = std::abs(coord_b.x) + std::abs(coord_b.y);
+
+        // Vertaillaan manhattan-etöisyyksiä
+        if (manhattan_a != manhattan_b) {
+            return manhattan_a < manhattan_b;
         }
-        // Jos manhattan, etäisyydet ovat samat, sortataan y:n perusteella
-        else if (coord1.y != coord2.y) {
-            return coord1.y < coord2.y;
+        // Vertaillaan y-koordinaatteja
+        if (coord_a.y != coord_b.y) {
+            return coord_a.y < coord_b.y;
         }
-        // Jos y:t samat, sortataan id:n perusteella
-        else {
-            return id1 < id2;
-        }
+        // Vertaillaan id:itä
+        return a.first < b.first;
+    };
 
-    });
+    // Käytetään ylläolevaa lambda-funktiota vertailuun
+    std::sort(bite_pair.begin(), bite_pair.end(), compare_coordinates);
 
-    return bite_ids;
+    // Luodaan vektori järjestetyille suupaloille ja laitetaan ne järjestyksessä sinne
+    std::vector<BiteID> sorted_ids_;
+
+    for (const auto& pair : bite_pair) {
+        sorted_ids_.push_back(pair.first);
+    }
+
+    // Return the sorted vector of BiteIDs
+    return sorted_ids_;
 }
-
 
 BiteID Datastructures::find_bite_with_coord(Coord xy)
 // Etsitään suupala sen koordinaattien perusteella
@@ -211,7 +227,7 @@ bool Datastructures::add_contour(ContourID id, const Name & name, ContourHeight 
     if ( contours_.find(id) != contours_.end() ) {
         return false;
     }
-    // Palautetaan false jos annettu korkeus on liian suuri
+    // Palautetaan false jos annettu korkeus on itseisarvoltaan liian suuri
     if ( height > MAX_CONTOUR_HEIGHT or height < -MAX_CONTOUR_HEIGHT) {
         return false;
     }
@@ -221,8 +237,7 @@ bool Datastructures::add_contour(ContourID id, const Name & name, ContourHeight 
     }
 
     // Lisätään uusi korkeuskäyrä säiliöön
-    contours_[id] = Contour{name, height, coords, -1, {}, {}};
-
+    contours_.emplace(id, Contour{name, height, coords, -1, {}});
     return true;
 }
 
@@ -230,11 +245,14 @@ std::vector<ContourID> Datastructures::all_contours()
 {
     // Tallennetaan korkeuskäyrien id:t vektoriin
     std::vector<ContourID> contour_ids;
+    // varataan vektorille sopivasti muistia
+    contour_ids.reserve(contours_.size());
 
+    // käydään contours_-map läpi ja laitetaan sieltä id:t vektoriin
     for ( const auto& contour : contours_ ) {
         contour_ids.push_back(contour.first);
     }
-
+    // palautetaan vektori jossa on kaikkien korkeuskäyrien id:t
     return contour_ids;
 }
 
@@ -244,8 +262,6 @@ Name Datastructures::get_contour_name(ContourID id)
     if ( contours_.find(id) == contours_.end() ) {
         return NO_NAME;
     }
-
-    // Return contours height
     return contours_[id].name;
 }
 
@@ -279,7 +295,6 @@ bool Datastructures::add_subcontour_to_contour(ContourID id,
         return false;
     }
 
-
     Contour& subcontour = contours_.at(id);
     Contour& parentcontour = contours_.at(parentid);
 
@@ -299,40 +314,41 @@ bool Datastructures::add_subcontour_to_contour(ContourID id,
         return false;
     }
 
-    // Jos kaikki ehdot täyttyvät, asetetaan alikäyrän parent_id ja lisätään alikäyrä vanhemman lapsiksi
-    subcontour.parentid = parentid;
-    parentcontour.children_ids.push_back(id);
+    // Lisätään parentid id:n vanhemmaksi
+    contours_[id].parentid = parentid;
+    // lisätään id parentid:n children_ids vektoriin
+    contours_[parentid].children_ids.push_back(id);
 
     return true;
 }
 
 bool Datastructures::add_bite_to_contour(BiteID biteid, ContourID contourid)
 {
-    // jos suupalaa tai korkeuskäyrää ei löydy, palautetaan false
-    if (bites_.find(biteid) == bites_.end() || contours_.find(contourid) == contours_.end()) {
-           return false;
-       }
-
-    // jos suupala on jo lisätty johonkin korkeuskäyrään, palautetaan false
-    for ( const auto& [id, info] : contours_ ) {
-        if ( std::find(info.bites_in_contour.begin(), info.bites_in_contour.end(),
-                      biteid) != info.bites_in_contour.end() ) {
-            return false;
-        }
+    // Jos suupalaa ei ole, palautetaan false
+    if ( bites_.find(biteid) == bites_.end() ) {
+        return false;
     }
 
-    for ( const auto& [id, info] : contours_ ) {
-        if (std::find(info.coords.begin(), info.coords.end(),
-                      bites_[biteid].coord) == info.coords.end()) {
-            return false;
-        }
-
+    // Jos korkeuskäyrää ei ole, palautetan false
+    if ( contours_.find(contourid) == contours_.end() ) {
+        return false;
     }
 
-    // Lisätään suupala korkeuskäyrän tietoihin ja korkeuskäyrä suupalan tietoihin
-    contours_[contourid].bites_in_contour.push_back(biteid);
+    // Jos suupala on jo jollakin käyrällä, palautetaan false
+    if ( bites_[biteid].incontour == true ) {
+        return false;
+    }
+
+    // Jos suupalan koordinaatit ei ole käyrän alueella, palautetaam false
+    if (std::find(contours_[contourid].coords.begin(), contours_[contourid].coords.end(),
+                  bites_[biteid].coord) == contours_[contourid].coords.end()) {
+        return false;
+    }
+    // Lisätään korkeuskäyrä suupalan tietoihin
+    bites_[biteid].incontour = true;
     bites_[biteid].bites_contour = contourid;
     return true;
+
 }
 
 std::vector<ContourID> Datastructures::get_bite_in_contours(BiteID id)
@@ -363,7 +379,7 @@ std::vector<ContourID> Datastructures::get_bite_in_contours(BiteID id)
         // siirrytään ylempään vanhempaan
         current_contour = contours_[current_contour].parentid;
     }
-
+    // palautetaan vektori kaikista suupalan korkeuskäyristä´
     return all_contours;
 
 }

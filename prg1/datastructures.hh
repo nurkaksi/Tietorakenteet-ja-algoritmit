@@ -130,6 +130,7 @@ private:
       Name name;
       Coord coord;
       ContourID bites_contour = -1;
+      bool incontour = false;
   };
 
   struct Contour {
@@ -138,7 +139,6 @@ private:
       std::vector<Coord> coords;
       ContourID parentid = -1;
       std::vector<ContourID> children_ids;
-      std::vector<BiteID> bites_in_contour;
   };
   // säiliö suupaloille
   std::unordered_map<BiteID, Bite> bites_;
