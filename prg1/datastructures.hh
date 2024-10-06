@@ -113,18 +113,19 @@ public:
   // Short rationale for estimate: pahimmassa tapauksessa silmukka käy jokaisen korkeuskäyrän
   std::vector<ContourID> all_subcontours_of_contour(ContourID id);
 
-  // Estimate of performance:
-  // Short rationale for estimate:
+  // Estimate of performance: O(n*log(n))
+  // Short rationale for estimate: järjestäminen on O(nlogn),
+  // muu vakioaikaista
   std::vector<BiteID> get_bites_closest_to(Coord /*xy*/);
 
   // Estimate of performance: O(1)
   // Short rationale for estimate: molemmat haut ja poistot ovat vakioaikaisia hajautustaulusta
   bool remove_bite(BiteID id);
 
-  // Estimate of performance:
-  // Short rationale for estimate:
-  ContourID get_closest_common_ancestor_of_contours(ContourID /*id1*/,
-                                                    ContourID /*id2*/);
+  // Estimate of performance: O(n)
+  // Short rationale for estimate: pahimmassa tapauksessa käydään jokainen käyrä läpi
+  ContourID get_closest_common_ancestor_of_contours(ContourID id1,
+                                                    ContourID id2);
 
 private:
 

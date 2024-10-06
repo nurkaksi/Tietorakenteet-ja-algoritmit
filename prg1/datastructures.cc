@@ -196,42 +196,32 @@ BiteID Datastructures::find_bite_with_coord(Coord xy)
 
 bool Datastructures::change_bite_coord(BiteID id, Coord newcoord)
 {
-    // Jos suupalaa ei löydy, palautetaan false
+    // jos suupalaa ei löydy, palautetaan false
     if (bites_.find(id) == bites_.end()) {
         return false;
     }
-
-    // Jos uusi koordinaatti on jo käytössä toiselle suupalalle, palautetaan false
+    // jos koordinaatissa on jo suupala, palautetaan false
     if (coordinates_in_use.find(newcoord) != coordinates_in_use.end()) {
         return false;
     }
-
-    // Haetaan suupalan nykyinen koordinaatti
-    Coord current_coord = bites_[id].coord;
-
-    // Jos koordinaatti ei ole muuttunut, ei tehdä mitään
-    if (current_coord == newcoord) {
-        return true;
-    }
-
     const auto& contour_id = bites_[id].bites_contour;
+    // Tarkistetaan onko suupala jo lisätty korkeuskäyrään
+    if ( contour_id != -1 ) {
 
-    // Tarkistetaan onko suupala korkeuskäyrässä, ja tarkistetaan, että uusi koordinaatti on korkeuskäyrän alueella
-    if (contour_id != -1) {
-
+        // Jos uusi koordinaatti ei ole korkeuskäyrän alueella, palautetaan false
         if (std::find(contours_[contour_id].coords.begin(),
                       contours_[contour_id].coords.end(),
-                      newcoord) == contours_[contour_id].coords.end()) {
-            return false;  // Koordinaatti ei ole alueella, palautetaan false
+                      newcoord) != contours_[contour_id].coords.end()) {
+            return false;
         }
     }
 
-    // Poistetaan vanha koordinaatti ja päivitetään uusi
-    coordinates_in_use.erase(current_coord);
+    // Vaihdetaan uusi koordinaatti tietoihin
+    coordinates_in_use.erase(bites_[id].coord);
     coordinates_in_use[newcoord] = id;
     bites_[id].coord = newcoord;
 
-    // Päivitetään tieto lajittelusta
+    // päivitetään tieto lajittelusta
     is_alphabetically_sorted_ = false;
     is_distance_sorted_ = false;
     return true;
@@ -435,11 +425,41 @@ Datastructures::all_subcontours_of_contour(ContourID id)
 }
 
 ContourID
-Datastructures::get_closest_common_ancestor_of_contours(ContourID /*id1*/,
-                                                        ContourID /*id2*/)
+Datastructures::get_closest_common_ancestor_of_contours(ContourID id1,
+                                                        ContourID id2)
 {
-  // Replace the line below with your implementation
-  throw NotImplemented("get_closest_common_ancestor_of_contours");
+    // Tarkistetaan, ovatko annetut käyrät olemassa
+    if (contours_.find(id1) == contours_.end() || contours_.find(id2) == contours_.end()) {
+        return NO_CONTOUR;
+    }
+
+    // Etsitään molempien käyrien esivanhemmat
+    std::vector<ContourID> ancestors1, ancestors2;
+
+    // Käyrä 1:n esivanhemmat
+    ContourID current_id = id1;
+    while (current_id != -1) {
+        ancestors1.push_back(current_id);
+        current_id = contours_[current_id].parentid;
+    }
+
+    // Käyrä 2:n esivanhemmat
+    current_id = id2;
+    while (current_id != -1) {
+        ancestors2.push_back(current_id);
+        current_id = contours_[current_id].parentid;
+    }
+
+    // Etsitään lähin yhteinen esivanhempi
+    for (auto ancestor1 : ancestors1) {
+        for (auto ancestor2 : ancestors2) {
+            if (ancestor1 == ancestor2) {
+                return ancestor1;
+            }
+        }
+    }
+
+    return NO_CONTOUR;
 }
 
 bool Datastructures::remove_bite(BiteID id)
@@ -460,8 +480,31 @@ bool Datastructures::remove_bite(BiteID id)
     return true;
 }
 
-std::vector<BiteID> Datastructures::get_bites_closest_to(Coord /*xy*/)
+std::vector<BiteID> Datastructures::get_bites_closest_to(Coord xy)
 {
-  // Replace the line below with your implementation
-  throw NotImplemented("get_bites_closest_to");
+    std::vector<std::pair<BiteID, int>> distances;
+
+    // Lasketaan Manhattan-etäisyys jokaiselle suupalalle
+    for (const auto& bite : bites_) {
+        const Coord& coord = bite.second.coord;
+        int distance = std::abs(coord.x - xy.x) + std::abs(coord.y - xy.y);
+        distances.push_back({bite.first, distance});
+    }
+
+    // Järjestetään suupalat etäisyyden mukaan
+    std::sort(distances.begin(), distances.end(), [this](const auto& a, const auto& b) {
+        if (a.second != b.second) return a.second < b.second;
+        const Coord& coord_a = bites_.at(a.first).coord;
+        const Coord& coord_b = bites_.at(b.first).coord;
+        if (coord_a.y != coord_b.y) return coord_a.y < coord_b.y;
+        return a.first < b.first;
+    });
+
+    // Palautetaan enintään kolme lähintä suupalaa
+    std::vector<BiteID> result;
+    for (size_t i = 0; i < std::min(distances.size(), size_t(3)); ++i) {
+        result.push_back(distances[i].first);
+    }
+
+    return result;
 }
