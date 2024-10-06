@@ -109,17 +109,17 @@ public:
 
   // Non-compulsory operations
 
-  // Estimate of performance:
-  // Short rationale for estimate:
-  std::vector<ContourID> all_subcontours_of_contour(ContourID /*id*/);
+  // Estimate of performance: O(n)
+  // Short rationale for estimate: pahimmassa tapauksessa silmukka käy jokaisen korkeuskäyrän
+  std::vector<ContourID> all_subcontours_of_contour(ContourID id);
 
   // Estimate of performance:
   // Short rationale for estimate:
   std::vector<BiteID> get_bites_closest_to(Coord /*xy*/);
 
-  // Estimate of performance:
-  // Short rationale for estimate:
-  bool remove_bite(BiteID /*id*/);
+  // Estimate of performance: O(1)
+  // Short rationale for estimate: molemmat haut ja poistot ovat vakioaikaisia hajautustaulusta
+  bool remove_bite(BiteID id);
 
   // Estimate of performance:
   // Short rationale for estimate:
@@ -152,6 +152,10 @@ private:
   // (nopeuttaa hakua koordinaatin perusteella ja pitää kirjaa käytetyistä koordinaateista)
   std::unordered_map<Coord, BiteID> coordinates_in_use;
 
+  std::vector<BiteID> cached_bites_alphabetically_;
+  std::vector<BiteID> cached_bites_distance_increasing_;
+  bool is_alphabetically_sorted_ = false;
+  bool is_distance_sorted_ = false;
 
 };
 

@@ -1,9 +1,11 @@
 /**
  * @brief The Datastructures class
- * STUDENTS: Modify the code below to implement the functionality of the class.
- * Also remove comments from the parameter names when you implement an operation
- * (Commenting out parameter name prevents compiler from warning about unused
- * parameters on operations you haven't yet implemented.)
+ * Tässä tiedostossa on funktioiden toteutukset
+ *
+ * Name : Sara Nurminen
+ * Student ID : 50224946
+ * User name : vhsanu
+ * E-mail : sara.nurminen@tuni.fi
  */
 
 #include "datastructures.hh"
@@ -22,23 +24,36 @@ Datastructures::~Datastructures()
 
 unsigned int Datastructures::get_bite_count()
 {
-    // Returns the amout of bites in the container
+    // Palauttaa tiedon bites_ säiliön alkioiden määrästä
     return bites_.size();
 }
 
 
 void Datastructures::clear_all()
 {
-  // Clears the containers from all bites and contours
+  // Tyhjennetään kaikki säiliöt
   bites_.clear();
   contours_.clear();
   coordinates_in_use.clear();
+
+  // tyhjennetään välimuistit ja päivitettään tiedot järjestyksestä
+
+  cached_bites_alphabetically_.clear();
+  cached_bites_distance_increasing_.clear();
+
+  is_alphabetically_sorted_ = false;
+  is_distance_sorted_ = false;
 }
 
 std::vector<BiteID> Datastructures::all_bites()
 {
-    // Using vector as a container for bite-ids
+    if (bites_.empty()) {
+        return {};
+    }
+    // luodaan vektori suupalojen id:itä varten
     std::vector<BiteID> bite_ids;
+    // varataan vektorille sopivasti muistia
+    bite_ids.reserve(bites_.size());
 
     for ( const auto& bite : bites_ ) {
         bite_ids.push_back(bite.first);
@@ -59,6 +74,10 @@ bool Datastructures::add_bite(BiteID id, const Name &name, Coord xy)
     // lisätään suupala (
     bites_.emplace(id, Bite{name, xy});
     coordinates_in_use.emplace(xy, id);
+
+    // päivitetään tieto lajittelusta
+    is_alphabetically_sorted_ = false;
+    is_distance_sorted_ = false;
     return true;
 }
 
@@ -88,90 +107,77 @@ Coord Datastructures::get_bite_coord(BiteID id)
 
 std::vector<BiteID> Datastructures::get_bites_alphabetically()
 {
-
-    // Luodaan vektori suupalan id:ille ja nimille
-    std::vector<std::pair<BiteID, Name>> bite_pair;
-    // varataan sopivasti muistia vektoria varten
-    bite_pair.reserve(bites_.size());
-
-    for ( const auto& [id, info] : bites_ ) {
-        bite_pair.emplace_back(id, info.name);
+    if (bites_.empty()) {
+        return {};
     }
 
-    // vertaillaan nimien perusteella
-    auto compare_name = [](const std::pair<BiteID, Name>& a,
-                           const std::pair<BiteID, Name>& b)
-                           -> bool {
-
-        // jos kaksi samaa nimeä, vertaillaan id:itä
-        if ( a.second == b.second ) {
-            return a.first < b.first;
-        }
-
-        return a.second < b.second;
-
-    };
-
-    // sortataan nimen perusteella ja laitetaan vektoriin
-    std::sort(bite_pair.begin(), bite_pair.end(), compare_name);
-
-    std::vector<BiteID> sorted_ids_;
-    for ( const auto& pair : bite_pair ) {
-        sorted_ids_.push_back(pair.first);
+    // jos muutoksia ei ole tapahtunut, palautetaan muistissa oleva vektori
+    if (is_alphabetically_sorted_) {
+        return cached_bites_alphabetically_;
     }
 
-    return sorted_ids_;
+    // jos järjestys ei enää pidä paikkansa, tyhjennetään se
+    cached_bites_alphabetically_.clear();
+    // varataan sopivasti vektorilla sopivasti tilaa
+    cached_bites_alphabetically_.reserve(bites_.size());
 
+    // laitetaan suupalat vektoriin
+    for (const auto& [id, info] : bites_) {
+        cached_bites_alphabetically_.push_back(id);
+    }
+
+    // sortataan aakkosjärjestykseen
+    std::sort(cached_bites_alphabetically_.begin(), cached_bites_alphabetically_.end(),
+              [this](BiteID a, BiteID b) {
+                  if (bites_[a].name != bites_[b].name) {
+                      return bites_[a].name < bites_[b].name;
+                  }
+                  return a < b;  // Jos nimet samat, vertaa id:itä
+              });
+
+    // merkitään että järjestys pitää paikkansa
+    is_alphabetically_sorted_ = true;
+    return cached_bites_alphabetically_;
 
 }
 
 std::vector<BiteID> Datastructures::get_bites_distance_increasing()
 {
-    // Luodaan vektori suupalan id:itä ja koordinaatteja varten
-    std::vector<std::pair<BiteID, Coord>> bite_pair;
-    // varataan vektorille sopivasti muistia
-    bite_pair.reserve(bites_.size());
-
-    // käydään bites_ säiliö läpi ja laitetaan tiedot luotuun vektoriin
-    for (const auto& bite : bites_) {
-        bite_pair.push_back({bite.first, bite.second.coord});
+    if (bites_.empty()) {
+        return {};
     }
 
-    // Vertaillaan alkioita lambda-funktion avulla
-    auto compare_coordinates = [](const std::pair<BiteID, Coord>& a,
-                                  const std::pair<BiteID, Coord>& b) -> bool {
-
-        const auto& coord_a = a.second;
-        const auto& coord_b = b.second;
-
-        // Lasketaan manhattan-etäisyys
-        int manhattan_a = std::abs(coord_a.x) + std::abs(coord_a.y);
-        int manhattan_b = std::abs(coord_b.x) + std::abs(coord_b.y);
-
-        // Vertaillaan manhattan-etöisyyksiä
-        if (manhattan_a != manhattan_b) {
-            return manhattan_a < manhattan_b;
-        }
-        // Vertaillaan y-koordinaatteja
-        if (coord_a.y != coord_b.y) {
-            return coord_a.y < coord_b.y;
-        }
-        // Vertaillaan id:itä
-        return a.first < b.first;
-    };
-
-    // Käytetään ylläolevaa lambda-funktiota vertailuun
-    std::sort(bite_pair.begin(), bite_pair.end(), compare_coordinates);
-
-    // Luodaan vektori järjestetyille suupaloille ja laitetaan ne järjestyksessä sinne
-    std::vector<BiteID> sorted_ids_;
-
-    for (const auto& pair : bite_pair) {
-        sorted_ids_.push_back(pair.first);
+    if (is_distance_sorted_) {
+        return cached_bites_distance_increasing_;
     }
 
-    // Return the sorted vector of BiteIDs
-    return sorted_ids_;
+    cached_bites_distance_increasing_.clear();
+    cached_bites_distance_increasing_.reserve(bites_.size());
+
+    for (const auto& [id, info] : bites_) {
+        cached_bites_distance_increasing_.push_back(id);
+    }
+
+    std::sort(cached_bites_distance_increasing_.begin(), cached_bites_distance_increasing_.end(),
+              [this](BiteID a, BiteID b) {
+                  const Coord& coord_a = bites_[a].coord;
+                  const Coord& coord_b = bites_[b].coord;
+
+                  // Manhattan-etäisyyden laskeminen
+                  int manhattan_a = std::abs(coord_a.x) + std::abs(coord_a.y);
+                  int manhattan_b = std::abs(coord_b.x) + std::abs(coord_b.y);
+
+                  if (manhattan_a != manhattan_b) {
+                      return manhattan_a < manhattan_b;
+                  }
+                  if (coord_a.y != coord_b.y) {
+                      return coord_a.y < coord_b.y;
+                  }
+                  return a < b;
+              });
+
+    is_distance_sorted_ = true;  // Merkitään välimuisti järjestetyksi
+    return cached_bites_distance_increasing_;
 }
 
 BiteID Datastructures::find_bite_with_coord(Coord xy)
@@ -216,6 +222,9 @@ bool Datastructures::change_bite_coord(BiteID id, Coord newcoord)
     coordinates_in_use[newcoord] = id;
     bites_[id].coord = newcoord;
 
+    // päivitetään tieto lajittelusta
+    is_alphabetically_sorted_ = false;
+    is_distance_sorted_ = false;
     return true;
 
 }
@@ -385,9 +394,35 @@ std::vector<ContourID> Datastructures::get_bite_in_contours(BiteID id)
 }
 
 std::vector<ContourID>
-Datastructures::all_subcontours_of_contour(ContourID /*id*/)
+Datastructures::all_subcontours_of_contour(ContourID id)
 {
-  throw NotImplemented("all_subcontours_of_contour");
+    // Tarkistetaan, onko korkeuskäyrä olemassa
+    if (contours_.find(id) == contours_.end()) {
+        return {NO_CONTOUR};
+    }
+
+    // Luodaan vektori johon tallennetaan kaikki alikäyrät
+    std::vector<ContourID> all_subcontours;
+
+    // Luodaan "pino" johon lisätään löydetyt käyrät, jotta voidaan tutkia
+    // löytyykö niille vielä alikäyriä
+    std::vector<ContourID> stack;
+    // lisätään annettu korkeuskäyrä ensimmäiseksi pinoon
+    stack.push_back(id);
+
+    // silmukka käy pinoa läpi
+    while (!stack.empty()) {
+        ContourID current_contour = stack.back();
+        stack.pop_back();  // Poistetaan nykyinen käsittelyssä oleva käyrä pinosta
+
+        // Käydään läpi kaikki nykyisen käyrän suorat alikäyrät
+        for (const auto& subcontour_id : contours_[current_contour].children_ids) {
+            all_subcontours.push_back(subcontour_id);  // Lisätään alikäyrä tulosvektoriin
+            stack.push_back(subcontour_id);            // Lisätään alikäyrä tutkittavaksi
+        }
+    }
+
+    return all_subcontours;
 }
 
 ContourID
@@ -398,10 +433,22 @@ Datastructures::get_closest_common_ancestor_of_contours(ContourID /*id1*/,
   throw NotImplemented("get_closest_common_ancestor_of_contours");
 }
 
-bool Datastructures::remove_bite(BiteID /*id*/)
+bool Datastructures::remove_bite(BiteID id)
 {
-  // Replace the line below with your implementation
-  throw NotImplemented("remove_bite");
+    // tarkistetaan onko suupala olemassa
+    if (bites_.find(id) == bites_.end()) {
+        return false;
+    }
+
+    // poistetaan suupala kummastakin säiliöstä
+    coordinates_in_use.erase(bites_[id].coord);
+    bites_.erase(id);
+
+    // päivitetään tieto lajittelusta
+    is_alphabetically_sorted_ = false;
+    is_distance_sorted_ = false;
+
+    return true;
 }
 
 std::vector<BiteID> Datastructures::get_bites_closest_to(Coord /*xy*/)
