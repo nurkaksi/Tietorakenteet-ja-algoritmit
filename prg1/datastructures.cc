@@ -128,12 +128,12 @@ std::vector<BiteID> Datastructures::get_bites_alphabetically()
 
     // sortataan aakkosjärjestykseen
     std::sort(cached_bites_alphabetically_.begin(), cached_bites_alphabetically_.end(),
-              [this](BiteID a, BiteID b) {
-                  if (bites_[a].name != bites_[b].name) {
-                      return bites_[a].name < bites_[b].name;
-                  }
-                  return a < b;  // Jos nimet samat, vertaa id:itä
-              });
+                  [this](const BiteID& a, const BiteID& b) {
+                      if (bites_.at(a).name != bites_.at(b).name) {
+                          return bites_.at(a).name < bites_.at(b).name;
+                      }
+                      return a < b;
+                  });
 
     // merkitään että järjestys pitää paikkansa
     is_alphabetically_sorted_ = true;
@@ -159,22 +159,21 @@ std::vector<BiteID> Datastructures::get_bites_distance_increasing()
     }
 
     std::sort(cached_bites_distance_increasing_.begin(), cached_bites_distance_increasing_.end(),
-              [this](BiteID a, BiteID b) {
-                  const Coord& coord_a = bites_[a].coord;
-                  const Coord& coord_b = bites_[b].coord;
+                  [this](const BiteID& a, const BiteID& b) {
+                      const Coord& coord_a = bites_.at(a).coord;
+                      const Coord& coord_b = bites_.at(b).coord;
+                      // Manhattan-etäisyyden laskeminen
+                      long long manhattan_a = std::abs(coord_a.x) + std::abs(coord_a.y);
+                      long long manhattan_b = std::abs(coord_b.x) + std::abs(coord_b.y);
+                      if (manhattan_a != manhattan_b) {
+                          return manhattan_a < manhattan_b;
+                      }
+                      if (coord_a.y != coord_b.y) {
+                          return coord_a.y < coord_b.y;
+                      }
+                      return a < b;
+                  });
 
-                  // Manhattan-etäisyyden laskeminen
-                  int manhattan_a = std::abs(coord_a.x) + std::abs(coord_a.y);
-                  int manhattan_b = std::abs(coord_b.x) + std::abs(coord_b.y);
-
-                  if (manhattan_a != manhattan_b) {
-                      return manhattan_a < manhattan_b;
-                  }
-                  if (coord_a.y != coord_b.y) {
-                      return coord_a.y < coord_b.y;
-                  }
-                  return a < b;
-              });
 
     is_distance_sorted_ = true;  // Merkitään välimuisti järjestetyksi
     return cached_bites_distance_increasing_;
