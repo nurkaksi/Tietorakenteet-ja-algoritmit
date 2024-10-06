@@ -196,32 +196,42 @@ BiteID Datastructures::find_bite_with_coord(Coord xy)
 
 bool Datastructures::change_bite_coord(BiteID id, Coord newcoord)
 {
-    // jos suupalaa ei löydy, palautetaan false
+    // Jos suupalaa ei löydy, palautetaan false
     if (bites_.find(id) == bites_.end()) {
         return false;
     }
-    // jos koordinaatissa on jo suupala, palautetaan false
+
+    // Jos uusi koordinaatti on jo käytössä toiselle suupalalle, palautetaan false
     if (coordinates_in_use.find(newcoord) != coordinates_in_use.end()) {
         return false;
     }
-    const auto& contour_id = bites_[id].bites_contour;
-    // Tarkistetaan onko suupala jo lisätty korkeuskäyrään
-    if ( contour_id != -1 ) {
 
-        // Jos uusi koordinaatti ei ole korkeuskäyrän alueella, palautetaan false
+    // Haetaan suupalan nykyinen koordinaatti
+    Coord current_coord = bites_[id].coord;
+
+    // Jos koordinaatti ei ole muuttunut, ei tehdä mitään
+    if (current_coord == newcoord) {
+        return true;
+    }
+
+    const auto& contour_id = bites_[id].bites_contour;
+
+    // Tarkistetaan onko suupala korkeuskäyrässä, ja tarkistetaan, että uusi koordinaatti on korkeuskäyrän alueella
+    if (contour_id != -1) {
+
         if (std::find(contours_[contour_id].coords.begin(),
                       contours_[contour_id].coords.end(),
-                      newcoord) != contours_[contour_id].coords.end()) {
-            return false;
+                      newcoord) == contours_[contour_id].coords.end()) {
+            return false;  // Koordinaatti ei ole alueella, palautetaan false
         }
     }
 
-    // Vaihdetaan uusi koordinaatti tietoihin
-    coordinates_in_use.erase(bites_[id].coord);
+    // Poistetaan vanha koordinaatti ja päivitetään uusi
+    coordinates_in_use.erase(current_coord);
     coordinates_in_use[newcoord] = id;
     bites_[id].coord = newcoord;
 
-    // päivitetään tieto lajittelusta
+    // Päivitetään tieto lajittelusta
     is_alphabetically_sorted_ = false;
     is_distance_sorted_ = false;
     return true;
