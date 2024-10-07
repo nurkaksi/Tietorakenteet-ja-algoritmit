@@ -4,6 +4,7 @@
 // The purpose of the use: tehokkuuden parantaminen ja lambda-funktioiden tekeminen
 
 // The part(s) where it was utilized: get_bites_alphabetically, get_bites_distance_increasing
+// get_closest_common_ancestor_of_contours
 #ifndef DATASTRUCTURES_HH
 #define DATASTRUCTURES_HH
 
@@ -16,6 +17,7 @@
 #include <unordered_map>
 #include <iostream>
 #include <algorithm>
+#include <unordered_set>
 
 using BiteID = long long;
 using ContourID = long long;
