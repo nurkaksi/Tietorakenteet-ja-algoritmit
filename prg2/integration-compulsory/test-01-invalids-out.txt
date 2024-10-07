@@ -44,5 +44,5 @@ Failed (NO_COORD returned)!
 Path not found!
 > # testing a path that doesnt exist
 > path_any 1 0
-Path not found!
+Input BiteID was not found
 > 

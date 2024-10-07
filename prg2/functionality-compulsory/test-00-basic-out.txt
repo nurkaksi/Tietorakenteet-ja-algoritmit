@@ -97,12 +97,12 @@ Failed (NO_CONNECTION returned)!
 > # Test getters
 > get_next_bites_from 11
 Bites:
-1. 🍏: pos=(3,5), id=66
-2. 🍉: pos=(6,6), id=33
+1. 🍉: pos=(6,6), id=33
+2. 🍏: pos=(3,5), id=66
 > get_next_bites_from 33
 Bites:
-1. 🎂: pos=(2,8), id=44
-2. 🍌: pos=(2,2), id=11
+1. 🍌: pos=(2,2), id=11
+2. 🎂: pos=(2,8), id=44
 > get_next_bites_from 66
 Bite:
    🍌: pos=(2,2), id=11

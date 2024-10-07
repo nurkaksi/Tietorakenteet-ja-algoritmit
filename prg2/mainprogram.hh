@@ -21,6 +21,7 @@
 #include <cassert>
 #include <chrono>
 #include <codecvt>
+#include <cstring>
 #include <functional>
 #include <iostream>
 #include <locale>

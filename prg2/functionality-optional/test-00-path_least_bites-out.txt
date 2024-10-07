@@ -54,10 +54,10 @@ Connection:
 5. (2,2) (distance 14)
 > # Test non-existing bite
 > path_least_bites 1 5
-Path not found!
+Input BiteID was not found
 > # Test Non-existing path
 > path_least_bites 1 4
-Path empty!
+Path not found!
 > # Test a T-crossing
 > add_connection 03 4 1 (3,2)
 Connection:
