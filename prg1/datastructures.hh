@@ -1,5 +1,9 @@
 // Datastructures.hh
+// AI tool used and the version: ChatGPT 4omini
 
+// The purpose of the use: tehokkuuden parantaminen ja lambda-funktioiden tekeminen
+
+// The part(s) where it was utilized: get_bites_alphabetically, get_bites_distance_increasing
 #ifndef DATASTRUCTURES_HH
 #define DATASTRUCTURES_HH
 
