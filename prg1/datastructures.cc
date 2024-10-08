@@ -428,27 +428,28 @@ ContourID
 Datastructures::get_closest_common_ancestor_of_contours(ContourID id1,
                                                         ContourID id2)
 {
-    // jos käyriä ei ole olemassa, palautetaan NO_CONTOUR
+    // jos käyrää ei olemassa, palautetaan NO_CONTOUR
     if (contours_.find(id1) == contours_.end() || contours_.find(id2) == contours_.end()) {
         return NO_CONTOUR;
     }
 
-    // tallennetaan käyrä 1:n esivanhemmat joukkoon
+    // luodaan vektori käyrä 1:n esivanhemmille
     std::unordered_set<ContourID> ancestors1;
-    ContourID current_id = id1;
+    // lisätään käyrä 1: vanhempi vektoriin ja aloitetaan käsittely siitä
+    ContourID current_id = contours_[id1].parentid;
+    // silmukassa edetään ylemmäs kunnes esivanhempia ei enää ole
     while (current_id != -1) {
         ancestors1.insert(current_id);
         current_id = contours_[current_id].parentid;
     }
 
-    // käydään käyrä 2:n vanhemmat yksi kerrallaan ja verrataan sitä
-    // ancestors1 setin alkioihin
-    current_id = id2;
+    // käydään silmukalla läpi käyrä 2:n esivanhempia vanhemmasta aloittaen
+    // ja vertaillaan niitä ancestors1 vektorin alkioihin
+    current_id = contours_[id2].parentid;
     while (current_id != -1) {
         if (ancestors1.find(current_id) != ancestors1.end()) {
             return current_id;
         }
-        // siirrytään taas ylempään vanhempaan
         current_id = contours_[current_id].parentid;
     }
 
