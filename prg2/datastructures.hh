@@ -144,30 +144,30 @@ public:
    * ============================
    */
 
-  // Estimate of performance: 
-  // Short rationale for estimate: 
-  bool add_connection(ConnectionID /*connectionid*/, BiteID /*id1*/, BiteID /*id2*/,
-                      std::vector<Coord> /*xy*/);
+  // Estimate of performance: O(n)
+  // Short rationale for estimate: n on koordinaattioen määrä ja ne täytyy käsitellä erikseen. Lisäys vakioaikasita
+  bool add_connection(ConnectionID connectionid, BiteID id1, BiteID id2,
+                      std::vector<Coord> xy);
 
-  // Estimate of performance: 
-  // Short rationale for estimate: 
+  // Estimate of performance: O(n)
+  // Short rationale for estimate: n on yhteyksien määrä. unordered mapin tyhjennys on lineaarista
   void clear_connections();
 
-  // Estimate of performance: 
-  // Short rationale for estimate: 
-  std::vector<BiteID> get_next_bites_from(BiteID /*id*/);
+  // Estimate of performance: O(n)
+  // Short rationale for estimate: n on suupalan yhteyksien määrä. yksittäisen käsittely O(1)
+  std::vector<BiteID> get_next_bites_from(BiteID id);
 
-  // Estimate of performance: 
-  // Short rationale for estimate: 
+  // Estimate of performance: O(n)
+  // Short rationale for estimate: n yhteyksien määrä, yhteydet käydään läpi kun etsitään id:iden välistä yhteyttä
   std::vector<ConnectionID> get_connections(BiteID id1 = NO_BITE, BiteID id2 = NO_BITE);
 
-  // Estimate of performance: 
-  // Short rationale for estimate: 
+  // Estimate of performance: O(n)
+  // Short rationale for estimate: n on yhteyden koordinaattien määrä
   std::vector<Coord> get_connection_coords(BiteID /*biteid*/,
                                            ConnectionID /*connectionid*/);
 
-  // Estimate of performance:
-  // Short rationale for estimate:
+  // Estimate of performance: O(n)
+  // Short rationale for estimate: n on suupalat+yhteydet
   std::vector<std::pair<Coord, Distance>> path_any(BiteID fromid, BiteID toid);
 
   // Non-compulsory operations
