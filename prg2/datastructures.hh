@@ -163,8 +163,8 @@ public:
 
   // Estimate of performance: O(n)
   // Short rationale for estimate: n on yhteyden koordinaattien määrä
-  std::vector<Coord> get_connection_coords(BiteID /*biteid*/,
-                                           ConnectionID /*connectionid*/);
+  std::vector<Coord> get_connection_coords(BiteID biteid,
+                                           ConnectionID connectionid);
 
   // Estimate of performance: O(n)
   // Short rationale for estimate: n on suupalat+yhteydet
