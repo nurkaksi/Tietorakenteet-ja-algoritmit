@@ -166,8 +166,8 @@ public:
   std::vector<Coord> get_connection_coords(BiteID biteid,
                                            ConnectionID connectionid);
 
-  // Estimate of performance: O(n)
-  // Short rationale for estimate: n on suupalat+yhteydet
+  // Estimate of performance: O(nlogn)
+  // Short rationale for estimate: jos yhteyksiä on suuri määrä suupaloihin verrattuna, tehokkuus lähestyy n log n
   std::vector<std::pair<Coord, Distance>> path_any(BiteID fromid, BiteID toid);
 
   // Non-compulsory operations
