@@ -5,6 +5,9 @@
 
 // The part(s) where it was utilized: get_bites_alphabetically, get_bites_distance_increasing
 // get_closest_common_ancestor_of_contours
+
+// prg2:ssa käytetty bfs algoritmin toteutukseen path_any funktiossa
+
 #ifndef DATASTRUCTURES_HH
 #define DATASTRUCTURES_HH
 
@@ -166,8 +169,9 @@ public:
   std::vector<Coord> get_connection_coords(BiteID biteid,
                                            ConnectionID connectionid);
 
-  // Estimate of performance: O(nlogn)
-  // Short rationale for estimate: jos yhteyksiä on suuri määrä suupaloihin verrattuna, tehokkuus lähestyy n log n
+  // Estimate of performance: O(n^2)
+  // Short rationale for estimate: pahimmassa tapauksessa yhteyksiä ja koordinaatteja käsitellään n-kertaa
+  // ja jokainen saattaa vaatia O(n) käsittelyn
   std::vector<std::pair<Coord, Distance>> path_any(BiteID fromid, BiteID toid);
 
   // Non-compulsory operations
