@@ -6,7 +6,8 @@
 // The part(s) where it was utilized: get_bites_alphabetically, get_bites_distance_increasing
 // get_closest_common_ancestor_of_contours
 
-// prg2:ssa käytetty bfs algoritmin toteutukseen path_any funktiossa
+// prg2:ssa käytetty bfs algoritmin toteutukseen path_any funktiossa, sekä
+// dijkstran algoritmin toteutukseen path_shortest
 
 #ifndef DATASTRUCTURES_HH
 #define DATASTRUCTURES_HH
@@ -181,10 +182,10 @@ public:
   std::vector<std::pair<Coord, Distance>> path_shortest(BiteID /*fromid*/,
                                                         BiteID /*toid*/);
 
-  // Estimate of performance:
-  // Short rationale for estimate:
-  std::vector<std::pair<Coord, Distance>> path_least_bites(BiteID /*fromid*/,
-                                                           BiteID /*toid*/);
+  // Estimate of performance: O(n^2)
+  // Short rationale for estimate: n on suupalojen määrä
+  std::vector<std::pair<Coord, Distance>> path_least_bites(BiteID fromid,
+                                                           BiteID toid);
 
   // Estimate of performance:
   // Short rationale for estimate:

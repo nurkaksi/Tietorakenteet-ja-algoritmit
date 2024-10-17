@@ -701,7 +701,7 @@ std::vector<std::pair<Coord, Distance>> Datastructures::path_any(BiteID fromid, 
     if ( fromid == toid ) {
         return {};
     }
-    // käytetään BFS eli syvyys ensin-hakua
+    // käytetään BFS eli syvyys ensin-hakua, koska se löytää kaikki polut
     // BFS-muuttujat: edeltävät solmut ja BFS-jono
     std::unordered_map<BiteID, BiteID> came_from;
     std::queue<BiteID> queue;
@@ -768,12 +768,74 @@ std::vector<std::pair<Coord, Distance>> Datastructures::path_shortest(BiteID /*f
   // Replace the line below with your implementation
   throw NotImplemented("path_shortest");
 }
-std::vector<std::pair<Coord, Distance>> Datastructures::path_least_bites(BiteID /*fromid*/,
-                                                                         BiteID /*toid*/)
+std::vector<std::pair<Coord, Distance>> Datastructures::path_least_bites(BiteID fromid, BiteID toid)
 {
-  // Replace the line below with your implementation
-  throw NotImplemented("path_least_bites");
+    // Jos suupaloja ei ole olemassa, palautetaan {{NO_COORD, NO_DISTANCE}}
+    if (bites_.find(fromid) == bites_.end() || bites_.find(toid) == bites_.end()) {
+        return {{NO_COORD, NO_DISTANCE}};
+    }
+    if (fromid == toid) {
+        return {};
+    }
+
+    // Käytetään BFS hakua, koska se löytää vähiten yhteyksiä sisältävän reitin
+    std::unordered_map<BiteID, BiteID> came_from;
+    std::queue<BiteID> queue;
+    queue.push(fromid);
+    came_from[fromid] = NO_BITE;
+
+    // BFS-silmukka
+    while (!queue.empty()) {
+        BiteID current = queue.front();
+        queue.pop();
+
+        // Käydään läpi kaikki yhteydet nykyisestä suupalasta
+        for (const auto& [neighbor, connection_id] : bite_connections_[current]) {
+            // Jos naapuri ei ole vielä käyty läpi
+            if (came_from.find(neighbor) == came_from.end()) {
+                came_from[neighbor] = current;
+
+                // Jos naapuri on kohde, rakennetaan polku
+                if (neighbor == toid) {
+                    std::vector<BiteID> path;
+                    BiteID step = toid;
+                    while (step != NO_BITE) {
+                        path.push_back(step);
+                        step = came_from[step];
+                    }
+                    std::reverse(path.begin(), path.end());
+
+                    // Rakennetaan lopullinen koordinaatti- ja etäisyysvektori
+                    std::vector<std::pair<Coord, Distance>> result;
+                    Distance total_distance = 0;
+                    Coord previous_coord = bites_[path[0]].coord;
+                    result.push_back({previous_coord, total_distance});
+
+                    // Käydään läpi polun suupalat ja lisätään väliyhteyksien koordinaatit
+                    for (size_t i = 1; i < path.size(); ++i) {
+                        std::vector<Coord> connection_coords = get_connection_coords(path[i - 1], bite_connections_[path[i - 1]][path[i]]);
+
+                        // Lisätään väliyhteyksien koordinaatit mutta jätetään ensimmäinen pois (vältetään päällekkäisyys)
+                        for (size_t j = 1; j < connection_coords.size(); ++j) {
+                            Distance distance = std::abs(connection_coords[j].x - previous_coord.x) + std::abs(connection_coords[j].y - previous_coord.y);
+                            total_distance += distance;
+                            result.push_back({connection_coords[j], total_distance});
+                            previous_coord = connection_coords[j];
+                        }
+                    }
+                    return result;
+                }
+
+                queue.push(neighbor);
+            }
+        }
+    }
+
+    // Jos polkua ei löytynyt, palautetaan tyhjä vektori
+    return {};
 }
+
+
 std::vector<std::pair<Coord, Distance>> Datastructures::path_least_uphill(BiteID /*fromid*/,
                                                                           BiteID /*toid*/)
 {
